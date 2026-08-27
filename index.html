@@ -571,6 +571,36 @@
     color:#3a4150;
   }
 
+
+  #premios{
+    overflow:hidden;
+  }
+  .prize-curve{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    opacity:.9;
+  }
+  .prize-curve svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  .prize-curve path{
+    fill:none;
+    stroke:rgba(166, 173, 186, .22);
+    stroke-width:2.2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  #premios .wrap{
+    position:relative;
+    z-index:1;
+  }
+
   /* ---------- Premios ---------- */
   .prizes{
     display:grid;
@@ -1178,10 +1208,19 @@
 
 <!-- ============ PREMIOS ============ -->
 <section id="premios">
+  <div class="prize-curve" aria-hidden="true">
+    <svg viewBox="0 0 1200 420" preserveAspectRatio="none">
+      <path d="M 30 340
+               C 180 340, 320 335, 430 255
+               C 500 205, 545 125, 600 108
+               C 655 125, 700 205, 770 255
+               C 880 335, 1020 340, 1170 340" />
+    </svg>
+  </div>
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="eyebrow">04 — Premiación</span>
-      <h2>Ajusta el modelo, <span class="accent">gana la copa</span>.</h2>
+      <h2>Premiación</h2>
       <p>El jurado decide los primeros tres lugares. Cada estudiante del podio recibe una tarjeta Amazon.</p>
     </div>
 
