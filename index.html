@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script>document.documentElement.classList.add('js');</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TEC·onometrics Cup 2026 — Torneo estudiantil de econometría</title>
@@ -187,7 +188,8 @@
   /* ---------- Etapas: la recta de regresión ---------- */
   .stages{position:relative; margin-top:20px}
   .stage-track{position:absolute; left:31px; top:8px; bottom:8px; width:2px; background:var(--line)}
-  .stage-track .fill{position:absolute; inset:0; background:linear-gradient(var(--volt), var(--volt-dim)); transform-origin:top; transform:scaleY(0); transition:transform 1.2s ease}
+  .stage-track .fill{position:absolute; inset:0; background:linear-gradient(var(--volt), var(--volt-dim)); transform-origin:top; transform:scaleY(1); transition:transform 1.2s ease}
+  .js .stage-track .fill{transform:scaleY(0)}
   .stages.in .stage-track .fill{transform:scaleY(1)}
   .stage{position:relative; display:grid; grid-template-columns:64px 1fr; gap:22px; padding:18px 0}
   .node{
@@ -270,9 +272,10 @@
   .foot-bottom{display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-top:52px; padding-top:24px; border-top:1px solid var(--line); font-family:var(--f-mono); font-size:.74rem; letter-spacing:.05em; color:var(--muted)}
 
   /* reveal */
-  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease}
-  .reveal.in{opacity:1; transform:none}
-  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1; transform:none; transition:none} }
+  .reveal{opacity:1; transform:none}
+  .js .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease}
+  .js .reveal.in{opacity:1; transform:none}
+  @media (prefers-reduced-motion: reduce){ .reveal, .js .reveal{opacity:1; transform:none; transition:none} }
 
   /* ---------- Responsive ---------- */
   @media (max-width:900px){
