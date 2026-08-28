@@ -591,7 +591,7 @@
   }
   .prize-curve path{
     fill:none;
-    stroke:rgba(166, 173, 186, .22);
+    stroke:rgba(166, 173, 186, .11);
     stroke-width:2.2;
     stroke-linecap:round;
     stroke-linejoin:round;
@@ -1210,11 +1210,33 @@
 <section id="premios">
   <div class="prize-curve" aria-hidden="true">
     <svg viewBox="0 0 1200 420" preserveAspectRatio="none">
-      <path d="M 30 340
-               C 180 340, 320 335, 430 255
-               C 500 205, 545 125, 600 108
-               C 655 125, 700 205, 770 255
-               C 880 335, 1020 340, 1170 340" />
+      <!-- curva 1: alta y angosta, a la izquierda -->
+      <path d="M 25 350
+               C 95 350, 140 347, 175 270
+               C 195 180, 212 72, 240 48
+               C 268 72, 285 180, 305 270
+               C 340 347, 385 350, 455 350" />
+
+      <!-- curva 2: alta y angosta, un poco a la derecha -->
+      <path d="M 220 350
+               C 320 350, 395 347, 445 255
+               C 470 170, 485 66, 500 48
+               C 515 66, 530 170, 555 255
+               C 605 347, 680 350, 780 350" />
+
+      <!-- curva 3: media, más ancha -->
+      <path d="M 285 350
+               C 390 350, 455 332, 510 255
+               C 555 195, 590 145, 620 138
+               C 650 145, 685 195, 730 255
+               C 785 332, 850 350, 955 350" />
+
+      <!-- curva 4: baja y muy ancha -->
+      <path d="M 70 350
+               C 250 350, 410 328, 560 268
+               C 650 230, 720 205, 780 200
+               C 840 205, 910 230, 1000 268
+               C 1080 305, 1140 335, 1180 350" />
     </svg>
   </div>
   <div class="wrap">
