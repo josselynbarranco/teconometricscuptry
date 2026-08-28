@@ -366,9 +366,92 @@
   @keyframes fadein{to{opacity:1}}
   @keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
 
+  /* Transición del gráfico del hero hacia "Econometría como verbo" */
+  .hero-art .pt,
+  .hero-art .reg-line,
+  .hero-art .reg-shadow,
+  .hero-art .pred,
+  .hero-art .arrow{
+    transition:opacity .28s ease;
+  }
+
+  .hero-art.graph-empty .pt,
+  .hero-art.graph-empty .reg-line,
+  .hero-art.graph-empty .reg-shadow,
+  .hero-art.graph-empty .pred,
+  .hero-art.graph-empty .arrow{
+    opacity:0 !important;
+  }
+
+  .reto-transfer-line{
+    width:min(420px,72%);
+    height:4px;
+    margin-top:18px;
+    margin-bottom:4px;
+    background:var(--volt);
+    border-radius:999px;
+    transform:scaleX(0);
+    transform-origin:left center;
+    opacity:0;
+  }
+
+  .reto-transfer-line.active{
+    animation:retoLineIn .48s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+
+  @keyframes retoLineIn{
+    0%{
+      transform:scaleX(0);
+      opacity:0;
+    }
+    100%{
+      transform:scaleX(1);
+      opacity:1;
+    }
+  }
+
+  .transfer-particle,
+  .transfer-arrow,
+  .transfer-line-piece{
+    position:fixed;
+    z-index:9999;
+    pointer-events:none;
+    will-change:transform,opacity;
+  }
+
+  .transfer-particle{
+    border-radius:50%;
+  }
+
+  .transfer-arrow{
+    width:22px;
+    height:22px;
+    border-top:3px solid var(--volt);
+    border-right:3px solid var(--volt);
+  }
+
+  .transfer-line-piece{
+    height:5px;
+    background:var(--volt);
+    border-radius:999px;
+    transform-origin:center center;
+  }
+
   @media (prefers-reduced-motion: reduce){
-    .reg-line{animation:none;stroke-dashoffset:0}
-    .pred,.arrow,.pt{animation:none;opacity:1}
+    .hero-art.graph-empty .pt,
+    .hero-art.graph-empty .reg-line,
+    .hero-art.graph-empty .reg-shadow,
+    .hero-art.graph-empty .pred,
+    .hero-art.graph-empty .arrow{
+      opacity:0 !important;
+    }
+
+    .reto-transfer-line,
+    .reto-transfer-line.active{
+      animation:none;
+      transform:scaleX(1);
+      opacity:1;
+    }
   }
 
   /* ---------- Section scaffolding ---------- */
@@ -1058,6 +1141,7 @@
     <div class="sec-head reveal">
       <span class="eyebrow">01 — El reto</span>
       <h2>Econometría como <span class="accent">verbo</span>.</h2>
+      <div class="reto-transfer-line" id="retoTransferLine" aria-hidden="true"></div>
       <p>
         De los datos observados a la predicción: relaciona conceptos avanzados de econometría
         con problemáticas sociales de hoy y formula soluciones con fundamento teórico y cuantitativo.
@@ -1376,6 +1460,362 @@
           toggle.setAttribute("aria-expanded","false");
         });
       });
+    }
+
+    /* ---------- TRANSFERENCIA DEL GRÁFICO AL SIGUIENTE BLOQUE ---------- */
+    if("IntersectionObserver" in window){
+      var heroArt = document.querySelector(".hero-art");
+      var retoSection = document.getElementById("reto");
+      var targetLine = document.getElementById("retoTransferLine");
+      var transferRunning = false;
+      var transferDone = false;
+
+      function createParticle(x, y, size, color, borderColor){
+        var p = document.createElement("span");
+        p.className = "transfer-particle";
+        p.style.left = (x - size / 2) + "px";
+        p.style.top = (y - size / 2) + "px";
+        p.style.width = size + "px";
+        p.style.height = size + "px";
+        p.style.background = color || "transparent";
+
+        if(borderColor){
+          p.style.border = "2px solid " + borderColor;
+        }
+
+        document.body.appendChild(p);
+        return p;
+      }
+
+      function getCircleCenter(el){
+        var r = el.getBoundingClientRect();
+        return {
+          x:r.left + r.width / 2,
+          y:r.top + r.height / 2,
+          size:Math.max(5, Math.min(10, Math.max(r.width, r.height)))
+        };
+      }
+
+      function samplePathPoints(path, count){
+        var points = [];
+        if(!path || typeof path.getTotalLength !== "function") return points;
+
+        var length = path.getTotalLength();
+        var svg = path.ownerSVGElement;
+        var matrix = path.getScreenCTM();
+
+        if(!svg || !matrix) return points;
+
+        for(var i = 0; i < count; i++){
+          var p = path.getPointAtLength(length * ((i + 1) / (count + 1)));
+          var sp = svg.createSVGPoint();
+          sp.x = p.x;
+          sp.y = p.y;
+          var screen = sp.matrixTransform(matrix);
+          points.push({x:screen.x, y:screen.y});
+        }
+
+        return points;
+      }
+
+      function clearTransferNodes(){
+        document.querySelectorAll(
+          ".transfer-particle,.transfer-arrow,.transfer-line-piece"
+        ).forEach(function(node){
+          node.remove();
+        });
+      }
+
+      function resetTransfer(){
+        clearTransferNodes();
+        transferRunning = false;
+        transferDone = false;
+
+        if(heroArt){
+          heroArt.classList.remove("graph-empty");
+        }
+
+        if(targetLine){
+          targetLine.classList.remove("active");
+        }
+      }
+
+      function runTransfer(){
+        if(!heroArt || !targetLine || transferRunning || transferDone) return;
+
+        transferRunning = true;
+
+        var reduceMotion =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        if(reduceMotion){
+          heroArt.classList.add("graph-empty");
+          targetLine.classList.add("active");
+          transferRunning = false;
+          transferDone = true;
+          return;
+        }
+
+        var target = targetLine.getBoundingClientRect();
+
+        if(target.width < 10){
+          transferRunning = false;
+          return;
+        }
+
+        var targetY = target.top + target.height / 2;
+        var startX = target.left + 12;
+        var usableWidth = Math.max(80, target.width - 24);
+
+        var sourceDots = Array.prototype.slice.call(
+          heroArt.querySelectorAll(".pt")
+        );
+
+        var particles = [];
+
+        sourceDots.forEach(function(dot, index){
+          var c = getCircleCenter(dot);
+          var fill = dot.getAttribute("fill");
+          var stroke = dot.getAttribute("stroke");
+
+          var isOutlined =
+            fill === "none" ||
+            (stroke && stroke.toLowerCase() !== "none");
+
+          var color = isOutlined ? "transparent" : (fill || "#e6e2d6");
+          var border = isOutlined ? (stroke || "#B6F03C") : null;
+
+          var node = createParticle(
+            c.x,
+            c.y,
+            Math.max(5, c.size * .8),
+            color,
+            border
+          );
+
+          particles.push({
+            node:node,
+            x:c.x,
+            y:c.y,
+            index:index,
+            total:sourceDots.length
+          });
+        });
+
+        /* Convertimos también la predicción punteada en puntitos que despegan. */
+        var predPath = heroArt.querySelector(".pred");
+        samplePathPoints(predPath, 7).forEach(function(pt, index){
+          var node = createParticle(
+            pt.x,
+            pt.y,
+            5,
+            "#B6F03C",
+            null
+          );
+
+          particles.push({
+            node:node,
+            x:pt.x,
+            y:pt.y,
+            index:sourceDots.length + index,
+            total:sourceDots.length + 7
+          });
+        });
+
+        /* La recta fitted viaja y termina convertida en la línea horizontal. */
+        var reg = heroArt.querySelector(".reg-line");
+        var regRect = reg ? reg.getBoundingClientRect() : null;
+        var movingLine = null;
+
+        if(regRect){
+          movingLine = document.createElement("span");
+          movingLine.className = "transfer-line-piece";
+
+          var lineWidth = Math.max(90, Math.hypot(regRect.width, regRect.height));
+          movingLine.style.width = lineWidth + "px";
+          movingLine.style.left =
+            (regRect.left + regRect.width / 2 - lineWidth / 2) + "px";
+          movingLine.style.top =
+            (regRect.top + regRect.height / 2 - 2.5) + "px";
+          movingLine.style.transform = "rotate(-45deg)";
+
+          document.body.appendChild(movingLine);
+        }
+
+        /* La punta de la flecha también despega. */
+        var arrow = heroArt.querySelector(".arrow");
+        var arrowRect = arrow ? arrow.getBoundingClientRect() : null;
+        var flyingArrow = null;
+
+        if(arrowRect){
+          flyingArrow = document.createElement("span");
+          flyingArrow.className = "transfer-arrow";
+          flyingArrow.style.left =
+            (arrowRect.left + arrowRect.width / 2 - 11) + "px";
+          flyingArrow.style.top =
+            (arrowRect.top + arrowRect.height / 2 - 11) + "px";
+          flyingArrow.style.transform = "rotate(-45deg)";
+          document.body.appendChild(flyingArrow);
+        }
+
+        /* Vacía la gráfica original apenas despega la composición. */
+        window.setTimeout(function(){
+          heroArt.classList.add("graph-empty");
+        }, 110);
+
+        particles.forEach(function(item, index){
+          var fraction =
+            particles.length > 1
+              ? index / (particles.length - 1)
+              : .5;
+
+          var endX = startX + usableWidth * fraction;
+          var endY = targetY;
+
+          /* Un arco leve hacia arriba para que sí parezca que "despegan". */
+          var lift = -55 - (index % 4) * 8;
+
+          item.node.animate(
+            [
+              {
+                transform:"translate(0,0) scale(1)",
+                opacity:1,
+                offset:0
+              },
+              {
+                transform:
+                  "translate(" +
+                  ((endX - item.x) * .42) + "px," +
+                  ((endY - item.y) * .42 + lift) + "px) scale(.85)",
+                opacity:.95,
+                offset:.48
+              },
+              {
+                transform:
+                  "translate(" +
+                  (endX - item.x) + "px," +
+                  (endY - item.y) + "px) scale(.45)",
+                opacity:.08,
+                offset:1
+              }
+            ],
+            {
+              duration:820,
+              delay:index * 15,
+              easing:"cubic-bezier(.22,.8,.22,1)",
+              fill:"forwards"
+            }
+          );
+        });
+
+        if(flyingArrow){
+          var ar = flyingArrow.getBoundingClientRect();
+          var arrowEndX = target.right - 8;
+          var arrowEndY = targetY;
+
+          flyingArrow.animate(
+            [
+              {
+                transform:"translate(0,0) rotate(-45deg) scale(1)",
+                opacity:1
+              },
+              {
+                transform:
+                  "translate(" +
+                  ((arrowEndX - (ar.left + ar.width / 2)) * .45) + "px," +
+                  ((arrowEndY - (ar.top + ar.height / 2)) * .45 - 75) +
+                  "px) rotate(-45deg) scale(.9)",
+                opacity:1,
+                offset:.5
+              },
+              {
+                transform:
+                  "translate(" +
+                  (arrowEndX - (ar.left + ar.width / 2)) + "px," +
+                  (arrowEndY - (ar.top + ar.height / 2)) +
+                  "px) rotate(45deg) scale(.55)",
+                opacity:0
+              }
+            ],
+            {
+              duration:900,
+              easing:"cubic-bezier(.22,.8,.22,1)",
+              fill:"forwards"
+            }
+          );
+        }
+
+        if(movingLine){
+          var ml = movingLine.getBoundingClientRect();
+          var lineTargetX = target.left + target.width / 2;
+          var lineTargetY = targetY;
+
+          movingLine.animate(
+            [
+              {
+                transform:"translate(0,0) rotate(-45deg) scaleX(1)",
+                opacity:1
+              },
+              {
+                transform:
+                  "translate(" +
+                  ((lineTargetX - (ml.left + ml.width / 2)) * .45) + "px," +
+                  ((lineTargetY - (ml.top + ml.height / 2)) * .45 - 45) +
+                  "px) rotate(-20deg) scaleX(.85)",
+                opacity:1,
+                offset:.5
+              },
+              {
+                transform:
+                  "translate(" +
+                  (lineTargetX - (ml.left + ml.width / 2)) + "px," +
+                  (lineTargetY - (ml.top + ml.height / 2)) +
+                  "px) rotate(0deg) scaleX(" +
+                  Math.max(.6, target.width / Math.max(1, ml.width)) +
+                  ")",
+                opacity:.95
+              }
+            ],
+            {
+              duration:900,
+              easing:"cubic-bezier(.22,.8,.22,1)",
+              fill:"forwards"
+            }
+          );
+        }
+
+        window.setTimeout(function(){
+          targetLine.classList.add("active");
+        }, 760);
+
+        window.setTimeout(function(){
+          clearTransferNodes();
+          transferRunning = false;
+          transferDone = true;
+        }, 1120);
+      }
+
+      if(heroArt && retoSection && targetLine){
+        var transferObserver = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){
+            if(entry.isIntersecting && window.scrollY > 40){
+              runTransfer();
+            }
+          });
+        }, {
+          threshold:.28
+        });
+
+        transferObserver.observe(retoSection);
+
+        /* Al volver arriba, restauramos la gráfica para que la secuencia se pueda repetir. */
+        window.addEventListener("scroll", function(){
+          if(window.scrollY < 70 && (transferDone || transferRunning)){
+            resetTransfer();
+          }
+        }, {passive:true});
+      }
     }
 
     /* ---------- REVEAL SEGURO ---------- */
