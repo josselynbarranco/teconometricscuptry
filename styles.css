@@ -1190,7 +1190,6 @@ footer{
   }
 }
 
-
 /* =========================================================
    NUESTRO SOCIO FORMADOR
    ========================================================= */
@@ -1201,39 +1200,44 @@ footer{
   overflow:hidden;
 }
 
+/*
+  El título ocupa las dos columnas.
+  Debajo quedan texto a la izquierda y logo a la derecha.
+  Así nada se monta encima de nada.
+*/
 .partner-grid{
   display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  gap:clamp(36px,5vw,64px);
+  grid-template-columns:minmax(0,1fr) minmax(420px,1fr);
+  column-gap:clamp(36px,5vw,64px);
+  row-gap:34px;
   align-items:center;
 }
 
-.partner-logo-wrap{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  min-width:0;
-  overflow:visible;
+.partner-heading{
+  grid-column:1 / -1;
 }
 
-.partner-copy{
-  max-width:620px;
-}
-
-.partner-copy > .eyebrow{
+.partner-heading .eyebrow{
   display:block;
-  margin-bottom:28px;
+  margin-bottom:30px;
 }
 
-.partner-copy h2{
-  font-size:clamp(2.5rem,5.8vw,4.4rem);
-  margin:0 0 26px;
+.partner-heading h2{
+  margin:0;
   color:var(--bone);
+  font-size:clamp(2.8rem,5.2vw,4.35rem);
+  line-height:.95;
   white-space:nowrap;
 }
 
-.partner-copy h2 .accent{
+.partner-heading h2 .accent{
   color:var(--volt);
+}
+
+.partner-copy{
+  grid-column:1;
+  min-width:0;
+  max-width:560px;
 }
 
 .partner-copy p{
@@ -1243,8 +1247,8 @@ footer{
 }
 
 .partner-copy .partner-lede{
-  font-size:1.08rem;
   color:#d9dde5;
+  font-size:1.08rem;
 }
 
 .partner-copy strong{
@@ -1253,6 +1257,7 @@ footer{
 }
 
 .partner-role{
+  margin-top:26px !important;
   padding-left:18px;
   border-left:3px solid var(--volt);
 }
@@ -1267,58 +1272,92 @@ footer{
   font-weight:600;
   letter-spacing:.06em;
   text-transform:uppercase;
-  color:#B6F03C;
+  color:var(--volt);
   transition:gap .2s ease;
 }
 
 .partner-link:hover{
   gap:13px;
-  color:#B6F03C;
+  color:var(--volt);
 }
 
+.partner-logo-wrap{
+  grid-column:2;
+  min-width:0;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+}
+
+/*
+  El logo crece dentro de SU columna.
+  No usa viewport width ni overflow, así que ya no invade el texto.
+*/
 .partner-logo{
-  width:clamp(560px,46vw,720px);
-  max-width:none;
+  display:block;
+  width:100%;
+  max-width:650px;
   height:auto;
   object-fit:contain;
-  flex:0 0 auto;
-  transform:none;
 }
 
+/* Pantallas intermedias */
+@media (max-width:1100px){
+  .partner-grid{
+    grid-template-columns:minmax(0,1fr) minmax(360px,.9fr);
+    column-gap:36px;
+  }
+
+  .partner-heading h2{
+    white-space:normal;
+  }
+
+  .partner-logo{
+    max-width:560px;
+  }
+}
+
+/* Tablet y móvil */
 @media (max-width:900px){
   .partner-grid{
     grid-template-columns:1fr;
+    row-gap:30px;
+  }
+
+  .partner-heading,
+  .partner-copy,
+  .partner-logo-wrap{
+    grid-column:1;
+  }
+
+  .partner-copy{
+    max-width:none;
   }
 
   .partner-logo-wrap{
     justify-content:center;
-    margin-top:18px;
-    margin-bottom:0;
+    margin-top:8px;
   }
 
   .partner-logo{
-    width:min(88vw,520px);
-    max-width:none;
-    transform:none;
+    width:min(92%,600px);
+    max-width:600px;
   }
 }
 
 @media (max-width:520px){
-  .partner-copy h2{
-    font-size:clamp(2.25rem,12vw,3.4rem);
+  .partner-heading .eyebrow{
+    margin-bottom:22px;
+  }
+
+  .partner-heading h2{
+    font-size:clamp(2.25rem,12vw,3.35rem);
   }
 
   .partner-logo{
-    width:min(94vw,430px);
-    max-width:none;
-    transform:none;
+    width:100%;
+    max-width:430px;
   }
 }
 
-
-@media (max-width:1100px){
-  .partner-copy h2{
-    white-space:normal;
-  }
-}
 
