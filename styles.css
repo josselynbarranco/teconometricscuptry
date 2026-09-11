@@ -1212,12 +1212,10 @@ footer{
   display:flex;
   align-items:center;
   justify-content:flex-end;
-  order:2;
 }
 
 .partner-copy{
   max-width:620px;
-  order:1;
 }
 
 .partner-copy > .eyebrow{
@@ -1289,7 +1287,6 @@ footer{
   }
 
   .partner-logo-wrap{
-    order:2;
     justify-content:center;
     margin-top:18px;
     margin-bottom:0;
