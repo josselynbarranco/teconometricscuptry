@@ -1189,3 +1189,128 @@ footer{
     left:21px;
   }
 }
+
+
+/* =========================================================
+   NUESTRO SOCIO FORMADOR
+   ========================================================= */
+
+.partner-section{
+  background:var(--ink-2);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+
+.partner-grid{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:clamp(42px,7vw,88px);
+  align-items:center;
+}
+
+.partner-copy{
+  max-width:620px;
+}
+
+.partner-copy h2{
+  font-size:clamp(2.5rem,5.8vw,4.4rem);
+  margin:18px 0 26px;
+  color:var(--bone);
+}
+
+.partner-copy h2 .accent{
+  color:var(--volt);
+}
+
+.partner-copy p{
+  margin:0 0 18px;
+  color:#c3c8d2;
+  font-size:1rem;
+}
+
+.partner-copy .partner-lede{
+  font-size:1.08rem;
+  color:#d9dde5;
+}
+
+.partner-copy strong{
+  color:var(--bone);
+  font-weight:600;
+}
+
+.partner-role{
+  padding-left:18px;
+  border-left:3px solid var(--volt);
+}
+
+.partner-link{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  margin-top:10px;
+  font-family:var(--f-mono);
+  font-size:.8rem;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:var(--volt);
+  transition:gap .2s ease, color .2s ease;
+}
+
+.partner-link:hover{
+  gap:13px;
+  color:var(--bone);
+}
+
+.partner-logo-card{
+  min-height:300px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(28px,5vw,54px);
+  background:var(--bone);
+  border:1px solid rgba(242,239,230,.18);
+  border-radius:4px;
+  position:relative;
+}
+
+.partner-logo-card::before{
+  content:"SOCIO FORMADOR";
+  position:absolute;
+  top:16px;
+  right:18px;
+  font-family:var(--f-mono);
+  font-size:.63rem;
+  letter-spacing:.18em;
+  color:var(--muted-ink);
+}
+
+.partner-logo{
+  width:100%;
+  max-width:620px;
+  height:auto;
+  object-fit:contain;
+}
+
+@media (max-width:900px){
+  .partner-grid{
+    grid-template-columns:1fr;
+  }
+
+  .partner-logo-card{
+    min-height:240px;
+    order:-1;
+  }
+}
+
+@media (max-width:520px){
+  .partner-logo-card{
+    padding:28px 20px;
+    min-height:190px;
+  }
+
+  .partner-copy h2{
+    font-size:clamp(2.25rem,12vw,3.4rem);
+  }
+}
+
