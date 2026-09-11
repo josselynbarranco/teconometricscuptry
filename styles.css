@@ -1203,13 +1203,21 @@ footer{
 
 .partner-grid{
   display:grid;
-  grid-template-columns:1.05fr .95fr;
+  grid-template-columns:1.1fr .9fr;
   gap:clamp(42px,7vw,88px);
   align-items:center;
 }
 
+.partner-logo-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  order:2;
+}
+
 .partner-copy{
   max-width:620px;
+  order:1;
 }
 
 .partner-copy > .eyebrow{
@@ -1268,32 +1276,9 @@ footer{
   color:#B6F03C;
 }
 
-.partner-logo-card{
-  min-height:300px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:clamp(28px,5vw,54px);
-  background:var(--bone);
-  border:1px solid rgba(242,239,230,.18);
-  border-radius:4px;
-  position:relative;
-}
-
-.partner-logo-card::before{
-  content:"SOCIO FORMADOR";
-  position:absolute;
-  top:16px;
-  right:18px;
-  font-family:var(--f-mono);
-  font-size:.63rem;
-  letter-spacing:.18em;
-  color:var(--muted-ink);
-}
-
 .partner-logo{
-  width:82%;
-  max-width:500px;
+  width:78%;
+  max-width:470px;
   height:auto;
   object-fit:contain;
 }
@@ -1303,20 +1288,27 @@ footer{
     grid-template-columns:1fr;
   }
 
-  .partner-logo-card{
-    min-height:240px;
-    order:-1;
+  .partner-logo-wrap{
+    order:2;
+    justify-content:center;
+    margin-top:18px;
+    margin-bottom:0;
+  }
+
+  .partner-logo{
+    width:72%;
+    max-width:420px;
   }
 }
 
 @media (max-width:520px){
-  .partner-logo-card{
-    padding:28px 20px;
-    min-height:190px;
-  }
-
   .partner-copy h2{
     font-size:clamp(2.25rem,12vw,3.4rem);
+  }
+
+  .partner-logo{
+    width:88%;
+    max-width:360px;
   }
 }
 
