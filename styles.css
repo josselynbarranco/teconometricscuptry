@@ -1203,8 +1203,8 @@ footer{
 
 .partner-grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:clamp(42px,6vw,72px);
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(36px,5vw,64px);
   align-items:center;
 }
 
@@ -1212,6 +1212,8 @@ footer{
   display:flex;
   align-items:center;
   justify-content:flex-end;
+  min-width:0;
+  overflow:visible;
 }
 
 .partner-copy{
@@ -1275,11 +1277,12 @@ footer{
 }
 
 .partner-logo{
-  width:112%;
-  max-width:620px;
+  width:clamp(560px,46vw,720px);
+  max-width:none;
   height:auto;
   object-fit:contain;
-  transform:translateX(4%);
+  flex:0 0 auto;
+  transform:none;
 }
 
 @media (max-width:900px){
@@ -1294,8 +1297,8 @@ footer{
   }
 
   .partner-logo{
-    width:88%;
-    max-width:500px;
+    width:min(88vw,520px);
+    max-width:none;
     transform:none;
   }
 }
@@ -1306,8 +1309,8 @@ footer{
   }
 
   .partner-logo{
-    width:96%;
-    max-width:420px;
+    width:min(94vw,430px);
+    max-width:none;
     transform:none;
   }
 }
